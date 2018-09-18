@@ -1,0 +1,24 @@
+{
+  "name": "spotify-rooms",
+  "version": "0.0.1",
+  "description": "-",
+  "scripts": {
+    "start": "tsc && nodemon build/src/server.js",
+    "test": "-"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanpage42/spotify-rooms.git"
+  },
+  "author": "Ryan Page",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ryanpage42/spotify-rooms/issues"
+  },
+  "homepage": "https://github.com/ryanpage42/spotify-rooms#readme",
+  "dependencies": {
+    "@types/node": "^10.10.1",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.3"
+  }
+}
