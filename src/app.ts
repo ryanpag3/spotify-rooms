@@ -7,6 +7,7 @@ import homeRoute from './routes/home';
 import roomRoute from './routes/room';
 import queueRoute from './routes/queue';
 import slackRoute from './routes/slack';
+import spotifyRoute from './routes/spotify';
 
 const app = express();
 const config = conf[env];
@@ -21,6 +22,7 @@ app.use('/', homeRoute);
 app.use('/room', roomRoute);
 app.use('/queue', queueRoute);
 app.use('/slack', slackRoute);
+app.use('/spotify', spotifyRoute);
 
 
 export default app;  

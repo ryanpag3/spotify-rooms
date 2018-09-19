@@ -1,7 +1,10 @@
 import path from 'path';
 import {Request, Response} from 'express';
+import Spotify from '../services/spotify';
+
+const spotify = new Spotify();
 
 export let index = (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../../../views/home.html'));
+    spotify.authorize(res);
 }
 

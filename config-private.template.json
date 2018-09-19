@@ -1,0 +1,11 @@
+{
+    "development": {
+        "spotify": {
+            "client_id": "",
+            "client_secret": ""
+        }
+    },
+    "production": {
+
+    }
+}
