@@ -1,4 +1,5 @@
 {
     "watch" : [],
-    "ext" : "ts, css, json"
+    "ext" : "ts, css, json",
+    "ignore": ["build"]
 }
