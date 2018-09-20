@@ -4,20 +4,25 @@ import {
 } from 'express';
 import url from 'url';
 import rp from 'request-promise';
-import privateConfig from '../../config-private.json';
+import PrivateConfig from '../../config-private.json';
+import Config from '../../config.json';
 
-const pConfig = privateConfig[env];
+const devEnv = env == 'development';
+const config = Config[env];
+const pConfig = PrivateConfig[env];
 
 export default class Spotify {
     /* static final */
     readonly CLIENT_ID: string = pConfig.spotify.client_id;
     readonly CLIENT_SECRET: string = pConfig.spotify.client_secret;
     readonly REDIRECT_URI: string = pConfig.spotify.redirect_uri;
+    readonly SCOPES: string = config.spotify.scopes;
 
     /* spotify URIs */
     readonly AUTHORIZE_URI: string = 'https://accounts.spotify.com/authorize';
     readonly CALLBACK_URI: string = 'https://accounts.spotify.com/api/token';
     readonly GETUSER_URI: string = 'https://api.spotify.com/v1/me';
+    readonly PAUSE_URI: string = 'https://api.spotify.com/v1/me/player/pause';
 
     /* non-static */
     accessToken: string;
@@ -35,10 +40,36 @@ export default class Spotify {
                 response_type: 'code',
                 client_id: this.CLIENT_ID,
                 client_secret: this.CLIENT_SECRET,
-                redirect_uri: this.REDIRECT_URI
+                redirect_uri: this.REDIRECT_URI,
+                scope: this.SCOPES
             }
         }
         res.redirect(url.format(options));
+    }
+
+    reauthorize = (refreshToken: string) => {
+
+        this.refreshToken = refreshToken; // reassign as part of reauth scope
+
+        const options = {
+            uri: this.CALLBACK_URI,
+            headers: {
+                ...this.getClientAuth()
+            },
+            form: {
+                grant_type: 'refresh_token',
+                refresh_token: refreshToken
+            }
+        }
+        return rp.post(options)
+            .then((response) => {
+                response = JSON.parse(response);
+                this.accessToken = response.access_token;
+                return;
+            })
+            .catch((err) => {
+                console.log('reauth error: ' + err);
+            })
     }
 
     getClientAuth = () => {
@@ -58,7 +89,6 @@ export default class Spotify {
         this.accessToken = tokenResponse.access_token;
         this.refreshToken = tokenResponse.refresh_token;
         return;
-        // return new Promise((resolve, reject) => resolve);
     }
 
     /**
@@ -88,7 +118,8 @@ export default class Spotify {
     }
 
     /**
-     * 
+     * get a user
+     * @returns request object 
      */
     getUser = () => {
         const options = {
@@ -98,5 +129,18 @@ export default class Spotify {
             }
         }
         return rp.get(options);
+    }
+
+    pause = () => {
+        const options = {
+            uri: this.PAUSE_URI,
+            headers: {
+                ...this.getBearerAuth()
+            }
+        }
+        return rp.put(options)
+            .catch((err) => {
+                console.log('pause err: ' + err.stack);
+            });
     }
 }

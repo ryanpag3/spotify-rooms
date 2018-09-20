@@ -2,7 +2,7 @@
     "development" : {
         "port" : 3000,
         "spotify": {
-            "scopes": ""
+            "scopes": "user-modify-playback-state"
         }
     },
     "production" : {
